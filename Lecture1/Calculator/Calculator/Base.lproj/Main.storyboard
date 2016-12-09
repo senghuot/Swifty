@@ -50,6 +50,9 @@
                                 <state key="normal" title="%">
                                     <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
+                                <connections>
+                                    <action selector="percentage" destination="BYZ-38-t0r" eventType="touchUpInside" id="CxM-p6-V1c"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Ru-aR-Jdd">
                                 <rect key="frame" x="268" y="96" width="76" height="70"/>
@@ -219,6 +222,9 @@
                                 <state key="normal" title="=">
                                     <color key="titleColor" red="0.96705960770657939" green="0.98987909256439699" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
+                                <connections>
+                                    <action selector="equals" destination="BYZ-38-t0r" eventType="touchUpInside" id="UvM-TN-r3w"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="adN-c0-GqQ">
                                 <rect key="frame" x="16" y="408" width="159" height="70"/>

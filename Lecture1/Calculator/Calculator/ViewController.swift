@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     
     var hasDecimalUsed = false;
     var isTyping = false;
+    var hadBeenCleared = false;
 
     @IBAction func appendDigit(_ sender: UIButton) {
         if (isTyping) {
@@ -22,44 +23,86 @@ class ViewController: UIViewController {
             display!.text! = sender.currentTitle!;
             isTyping = true;
         }
-        
     }
     
+    
     @IBAction func operate(_ sender: UIButton) {
-        equals();
+        isTyping = false;
+        operandStack.append(displayValue);
         
         let operation = sender.currentTitle!;
         
         switch operation {
-        case "×":
-            performOperation(operation: { (op1: Double, op2: Double) -> Double in
-                return op1 * op2
-            });
-        case "÷":
-            performOperation(operation: { (op1: Double, op2: Double) -> Double in
-                return op1 / op2;
-            });
-        case "-":
-            performOperation(operation: { (op1: Double, op2: Double) -> Double in
-                return op1 - op2;
-            });
+
         case "+":
-            performOperation(operation: { (op1: Double, op2: Double) -> Double in
-                return op1 + op2;
-            });
+            operatorStack.append(Operator.Addition)
+            let res = performOperation();
+            operandStack.append(res!.res!);
+            displayValue = res!.res!;
+            
+        case "÷":
+            operatorStack.append(Operator.Division)
+            let res = performOperation();
+            operandStack.append(res!.res!);
+            displayValue = res!.res!;
+            
+        case "-":
+            operatorStack.append(Operator.Subtraction)
+            let res = performOperation();
+            operandStack.append(res!.res!);
+            displayValue = res!.res!;
+            
+        case "×":
+            operatorStack.append(Operator.Multiplication)
+            let res = performOperation();
+            operandStack.append(res!.res!);
+            displayValue = res!.res!;
+        
         default:
             break;
         }
     }
     
-    func performOperation(operation: (Double, Double) -> Double) {
-        if (operandStack.count > 1) {
-            displayValue = operation(operandStack.removeLast(), operandStack.removeLast());
-            equals();
+    func performOperation() -> (op1: Double?, op2: Double?, res: Double?)! {
+        if (operandStack.count == 0) {
+            return nil;
+        } else if (operandStack.count == 1) {
+            return (nil, nil, operandStack.removeLast());
         }
+        
+        let op1 = operandStack.removeLast();
+        let op2 = operandStack.removeLast();
+        
+        if (operatorStack.count == 0) {
+            return (op1, op2, op2);
+        }
+        
+        let operation = operatorStack.removeLast();
+        
+            
+        switch operation {
+        
+        case Operator.Addition:
+            return (op1, op2, (op1 + op2));
+        
+        case Operator.Subtraction:
+            return (op1, op2, (op1 - op2));
+        
+        case Operator.Multiplication:
+            return (op1, op2, (op1 * op2));
+        
+        case Operator.Division:
+            return (op1, op2, (op1 / op2));
+            
+        
+        case Operator.Nil:
+            return (nil, nil, op2);
+        }
+        
     }
     
     var operandStack = Array<Double>();
+    var operatorStack = Array<Operator>();
     
     var displayValue: Double {
         get {
@@ -70,6 +113,10 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func percentage() {
+        displayValue /= 100;
+    }
+    
     @IBAction func appendDecimal(_ sender: UIButton) {
         if (!hasDecimalUsed) {
             hasDecimalUsed = true;
@@ -78,6 +125,9 @@ class ViewController: UIViewController {
     }
 
     @IBAction func invertDigit() {
+        if (displayValue == 0) {
+            return;
+        }
         displayValue *= -1;
         if (!hasDecimalUsed) {
             let displayString = display!.text!;
@@ -90,12 +140,31 @@ class ViewController: UIViewController {
         display!.text! = "0";
         hasDecimalUsed = false;
         isTyping = false;
+        if (hadBeenCleared) {
+            operandStack.removeAll();
+            operatorStack.removeAll();
+        }
+        hadBeenCleared = !hadBeenCleared;
     }
     
     @IBAction func equals() {
         isTyping = false;
         operandStack.append(displayValue);
-        print("operandStack = \(operandStack)");
+        let res = performOperation();
+        if (res != nil) {
+            operandStack.append(res!.res!);
+            displayValue = res!.res!;
+        }
+        print("operandStack \(operandStack)");
+        print("operatorStack \(operatorStack)");
+    }
+    
+    enum Operator {
+        case Addition
+        case Subtraction
+        case Division
+        case Multiplication
+        case Nil
     }
 }
 
